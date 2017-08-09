@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Светлана Ким](https://up.htmlacademy.ru/javascript/10/user/227035).
-* Наставник: `Неизвестно`.
+* Наставник: `Без наставника`.
 
 ---
 
