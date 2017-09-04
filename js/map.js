@@ -1,6 +1,8 @@
 'use strict';
 
 var COUNT = 8;
+var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
 var USER_IDS = [
   '01',
   '02',
@@ -155,6 +157,7 @@ var getPin = function (advert) {
   img.className = IMG_CLASS_NAME;
   img.width = IMG_WIDTH;
   img.height = IMG_HEIGHT;
+  img.tabIndex = 0;
 
   pin.className = PIN_CLASS_NAME;
   pin.style.left = advert.location.x - pin.offsetWidth / 2 + 'px';
@@ -205,8 +208,10 @@ var renderDialogAvatar = function (advert) {
   dialog.querySelector('.dialog__title img').src = advert.author.avatar;
 };
 
-var dialogPanel = dialog.querySelector('.dialog__panel');
+
 var renderAdvertCard = function (dialogCard) {
+  dialog.classList.remove('hidden');
+  var dialogPanel = dialog.querySelector('.dialog__panel');
   var fragment = document.createDocumentFragment();
   fragment.appendChild(dialogCard);
   dialog.replaceChild(fragment, dialogPanel);
@@ -218,5 +223,59 @@ renderPin(advertList, tokyoPinMap);
 
 var dialogCard = getAdvertCard(advertList[0]);
 renderAdvertCard(dialogCard);
-
 renderDialogAvatar(advertList[0]);
+
+var pinsArray = document.getElementsByClassName('pin');
+var dialogClose = dialog.querySelector('.dialog__close');
+
+var closePopup = function () {
+  dialog.classList.add('hidden');
+  for (var j = 0; j < pinsArray.length; j++) {
+    pinsArray[j].classList.remove('pin--active');
+  }
+};
+
+var openPopup = function (currentPin) {
+  for (var j = 0; j < pinsArray.length; j++) {
+    pinsArray[j].classList.remove('pin--active');
+  }
+  currentPin.classList.add('pin--active');
+
+  var thisLeft = parseFloat(currentPin.style.left);
+  var thisTop = parseFloat(currentPin.style.top);
+
+  for (var k = 0; k < advertList.length; k++) {
+    if ((advertList[k].location.x === thisLeft) && (advertList[k].location.y === thisTop)) {
+      var currentCard = getAdvertCard(advertList[k]);
+      renderAdvertCard(currentCard);
+      renderDialogAvatar(advertList[k]);
+    }
+  }
+};
+
+function setHandlers(i) {
+  pinsArray[i].addEventListener('click', function () {
+    var currentPin = pinsArray[i];
+    openPopup(currentPin);
+  });
+  pinsArray[i].addEventListener('keydown', function (evt) {
+    var currentPin = pinsArray[i];
+    if (evt.keyCode === ENTER_KEYCODE) {
+      openPopup(currentPin);
+    }
+  });
+}
+
+for (var i = 0; i < pinsArray.length; i++) {
+  setHandlers(i);
+}
+
+dialogClose.addEventListener('click', function () {
+  closePopup();
+});
+
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+});
