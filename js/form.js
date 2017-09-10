@@ -9,20 +9,19 @@
   var roomNumber = form.querySelector('#room_number');
   var capacity = form.querySelector('#capacity');
 
-  var onCheckInChange = function (evt) {
-    checkOut.value = evt.target.value;
+  var syncValues = function (element, value) {
+    element.value = value;
   };
 
-  var onTypeChange = function () {
-    var prices = {
-      flat: 1000,
-      bungalo: 0,
-      house: 5000,
-      palace: 10000
-    };
-    price.setAttribute('min', prices[type.value]);
-    price.setAttribute('placeholder', prices[type.value]);
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
+    element.value = value;
+    element.placeHolder = value;
   };
+
+  window.synchronizeFields(checkIn, checkOut, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues);
+  window.synchronizeFields(checkOut, checkIn, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues);
+  window.synchronizeFields(type, price, ['flat', 'bungalo', 'house', 'palace'], [1000, 0, 5000, 10000], syncValueWithMin);
 
   var onRoomNumberChange = function () {
     for (var k = 0; k < capacity.options.length; k++) {
@@ -56,8 +55,6 @@
     }
   };
 
-  checkIn.addEventListener('change', onCheckInChange);
-  type.addEventListener('change', onTypeChange);
   roomNumber.addEventListener('change', onRoomNumberChange);
   onRoomNumberChange();
 

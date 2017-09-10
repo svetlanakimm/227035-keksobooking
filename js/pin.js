@@ -39,12 +39,13 @@ window.pin = (function () {
   };
 
   var tokyoPinMap = 'tokyo__pin-map';
+  var advertList = window.data.getAdvertList();
 
-  renderPin(window.advertList, tokyoPinMap);
+  renderPin(advertList, tokyoPinMap);
 
   return {
     closePopup: function () {
-      window.dialog.classList.add('hidden');
+      window.data.dialog.classList.add('hidden');
       for (var j = 0; j < window.pin.pinsArray.length; j++) {
         window.pin.pinsArray[j].classList.remove('pin--active');
       }
@@ -58,14 +59,15 @@ window.pin = (function () {
       var thisLeft = parseFloat(currentPin.style.left);
       var thisTop = parseFloat(currentPin.style.top);
 
-      for (var k = 0; k < window.advertList.length; k++) {
-        if ((window.advertList[k].location.x === thisLeft) && (window.advertList[k].location.y === thisTop)) {
-          var currentCard = window.data.getAdvertCard(window.advertList[k]);
-          window.card.renderAdvertCard(currentCard);
-          window.card.renderDialogAvatar(window.advertList[k]);
+      for (var k = 0; k < advertList.length; k++) {
+        if ((advertList[k].location.x === thisLeft) && (advertList[k].location.y === thisTop)) {
+          var currentCard = window.data.getAdvertCard(advertList[k]);
+          window.showCard(currentCard);
+          window.card.renderDialogAvatar(advertList[k]);
         }
       }
-    }
+    },
+    advertList: advertList
   };
 
 })();
@@ -78,7 +80,7 @@ function setHandlers(i) {
   });
   window.pin.pinsArray[i].addEventListener('keydown', function (evt) {
     var currentPin = window.pin.pinsArray[i];
-    if (evt.keyCode === window.ENTER_KEYCODE) {
+    if (evt.keyCode === window.data.ENTER_KEYCODE) {
       window.pin.openPopup(currentPin);
     }
   });

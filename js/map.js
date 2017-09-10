@@ -8,14 +8,14 @@
   });
 
   document.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.ESC_KEYCODE) {
+    if (evt.keyCode === window.data.ESC_KEYCODE) {
       window.pin.closePopup();
     }
   });
 
-  var dialogCard = window.data.getAdvertCard(window.advertList[0]);
-  window.card.renderAdvertCard(dialogCard);
-  window.card.renderDialogAvatar(window.advertList[0]);
+  var dialogCard = window.data.getAdvertCard(window.pin.advertList[0]);
+  window.showCard(dialogCard);
+  window.card.renderDialogAvatar(window.pin.advertList[0]);
   var pinMain = document.querySelector('.pin__main');
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();

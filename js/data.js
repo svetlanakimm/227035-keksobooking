@@ -66,6 +66,8 @@ window.data = (function () {
   var dialogTemplate = document.querySelector('.dialog__panel');
 
   return {
+    ENTER_KEYCODE: 13,
+    ESC_KEYCODE: 27,
     getRandomInt: function (min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
@@ -158,12 +160,12 @@ window.data = (function () {
       lodgeCard.querySelector('.lodge__description').textContent = advert.offer.description;
 
       return lodgeCard;
-    }
+    },
+    dialog: document.querySelector('.dialog')
+    // advertList: this.getAdvertList()
   };
 
 })();
 
-window.advertList = window.data.getAdvertList();
-window.dialog = document.querySelector('.dialog');
-window.ENTER_KEYCODE = 13;
-window.ESC_KEYCODE = 27;
+// window.advertList = window.data.getAdvertList();
+
