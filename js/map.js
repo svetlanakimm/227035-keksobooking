@@ -13,9 +13,6 @@
     }
   });
 
-  var dialogCard = window.data.getAdvertCard(window.pin.advertList[0]);
-  window.showCard(dialogCard);
-  window.card.renderDialogAvatar(window.pin.advertList[0]);
   var pinMain = document.querySelector('.pin__main');
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();

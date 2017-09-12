@@ -66,14 +66,30 @@
     }
   };
 
-  var setDefaultValues = function (evt) {
-    evt.preventDefault();
-    form.submit();
+  var setDefaultValues = function () {
     form.reset();
+  };
+
+  var onSuccess = function () {
+    setDefaultValues();
+    if (document.body.firstChild.className === 'error-message') {
+      document.body.firstChild.remove();
+    }
+  };
+
+  var onError = function (message) {
+    var node = document.createElement('div');
+    node.classList.add('error-message');
+    node.style = 'z-index: 110; position: fixed; margin: 0 auto; text-align: center; background-color: red; left: 0; right: 0; color: white; font-size: 20px;';
+    node.textContent = message;
+    document.body.insertAdjacentElement('afterbegin', node);
   };
 
   form.addEventListener('input', changeStyleBorderColor, true);
   form.addEventListener('invalid', changeStyleBorderColor, true);
-  form.addEventListener('submit', setDefaultValues);
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(form), onSuccess, onError);
+  });
 
 })();
