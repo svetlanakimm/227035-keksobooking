@@ -2,6 +2,7 @@
 
 window.pin = (function () {
 
+  var tokyoPinMap = 'tokyo__pin-map';
   var getPin = function (advert) {
     var PIN_CLASS_NAME = 'pin';
     var IMG_CLASS_NAME = 'rounded';
@@ -26,66 +27,75 @@ window.pin = (function () {
     return pin;
   };
 
+  var openPopup = function (currentPin) {
+    window.pin.pinsArray = document.getElementsByClassName('pin');
+    for (var j = 0; j < window.pin.pinsArray.length; j++) {
+      window.pin.pinsArray[j].classList.remove('pin--active');
+    }
+    currentPin.classList.add('pin--active');
+
+    var thisLeft = parseFloat(currentPin.style.left);
+    var thisTop = parseFloat(currentPin.style.top);
+
+    for (var k = 0; k < window.pin.advertList.length; k++) {
+      if ((window.pin.advertList[k].location.x === thisLeft) && (window.pin.advertList[k].location.y === thisTop)) {
+        var currentCard = window.card.getAdvertCard(window.pin.advertList[k]);
+        window.showCard(currentCard);
+        window.card.renderDialogAvatar(window.pin.advertList[k]);
+      }
+    }
+  };
+  var closePopup = function () {
+    window.pin.pinsArray = document.getElementsByClassName('pin');
+    window.data.dialog.classList.add('hidden');
+    for (var j = 0; j < window.pin.pinsArray.length; j++) {
+      window.pin.pinsArray[j].classList.remove('pin--active');
+    }
+  };
+  var setHandlers = function (pin) {
+    pin.addEventListener('click', function () {
+      // var currentPin = pin;
+      openPopup(pin);
+    });
+    pin.addEventListener('keydown', function (evt) {
+      // var currentPin = pin;
+      if (evt.keyCode === window.data.ENTER_KEYCODE) {
+        openPopup(pin);
+      }
+    });
+  };
   var renderPin = function (adverts, className) {
     var pinsMap = document.querySelector('.' + className);
     var fragment = document.createDocumentFragment();
 
     adverts.forEach(function (element) {
-      fragment.appendChild(getPin(element));
+      var currentPin = getPin(element);
+      fragment.appendChild(currentPin);
+      setHandlers(currentPin);
     });
 
     pinsMap.appendChild(fragment);
     return pinsMap;
   };
 
-  var tokyoPinMap = 'tokyo__pin-map';
-  var advertList = window.data.getAdvertList();
-
-  renderPin(advertList, tokyoPinMap);
+  window.backend.load(function (response) {
+    window.pin.advertList = response;
+    renderPin(window.pin.advertList, tokyoPinMap);
+    var dialogCard = window.card.getAdvertCard(window.pin.advertList[0]);
+    window.showCard(dialogCard);
+    window.card.renderDialogAvatar(window.pin.advertList[0]);
+  },
+  function (message) {
+    var node = document.createElement('div');
+    node.classList.add('error-message');
+    node.style = 'z-index: 110; position: fixed; margin: 0 auto; text-align: center; background-color: red; left: 0; right: 0; color: white; font-size: 20px;';
+    node.textContent = message;
+    document.body.insertAdjacentElement('afterbegin', node);
+  });
 
   return {
-    closePopup: function () {
-      window.data.dialog.classList.add('hidden');
-      for (var j = 0; j < window.pin.pinsArray.length; j++) {
-        window.pin.pinsArray[j].classList.remove('pin--active');
-      }
-    },
-    openPopup: function (currentPin) {
-      for (var j = 0; j < window.pin.pinsArray.length; j++) {
-        window.pin.pinsArray[j].classList.remove('pin--active');
-      }
-      currentPin.classList.add('pin--active');
-
-      var thisLeft = parseFloat(currentPin.style.left);
-      var thisTop = parseFloat(currentPin.style.top);
-
-      for (var k = 0; k < advertList.length; k++) {
-        if ((advertList[k].location.x === thisLeft) && (advertList[k].location.y === thisTop)) {
-          var currentCard = window.data.getAdvertCard(advertList[k]);
-          window.showCard(currentCard);
-          window.card.renderDialogAvatar(advertList[k]);
-        }
-      }
-    },
-    advertList: advertList
+    closePopup: closePopup,
+    openPopup: openPopup
   };
 
 })();
-
-window.pin.pinsArray = document.getElementsByClassName('pin');
-function setHandlers(i) {
-  window.pin.pinsArray[i].addEventListener('click', function () {
-    var currentPin = window.pin.pinsArray[i];
-    window.pin.openPopup(currentPin);
-  });
-  window.pin.pinsArray[i].addEventListener('keydown', function (evt) {
-    var currentPin = window.pin.pinsArray[i];
-    if (evt.keyCode === window.data.ENTER_KEYCODE) {
-      window.pin.openPopup(currentPin);
-    }
-  });
-}
-
-for (var i = 0; i < window.pin.pinsArray.length; i++) {
-  setHandlers(i);
-}
