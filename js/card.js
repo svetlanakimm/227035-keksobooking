@@ -2,6 +2,18 @@
 
 window.card = (function () {
   var dialogTemplate = document.querySelector('.dialog__panel');
+
+  var dialogClose = document.querySelector('.dialog__close');
+  dialogClose.addEventListener('click', function () {
+    window.pin.closePopup();
+  });
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === window.data.ESC_KEYCODE) {
+      window.pin.closePopup();
+    }
+  });
+
   return {
     renderDialogAvatar: function (advert) {
       window.data.dialog.querySelector('.dialog__title img').src = advert.author.avatar;
