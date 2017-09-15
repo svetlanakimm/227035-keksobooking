@@ -1,18 +1,6 @@
 'use strict';
 
 (function () {
-
-  var dialogClose = document.querySelector('.dialog__close');
-  dialogClose.addEventListener('click', function () {
-    window.pin.closePopup();
-  });
-
-  document.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.data.ESC_KEYCODE) {
-      window.pin.closePopup();
-    }
-  });
-
   var pinMain = document.querySelector('.pin__main');
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
